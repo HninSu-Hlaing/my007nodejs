@@ -6,10 +6,13 @@ var logger = require('morgan');
 var mongoose=require('mongoose');
 var session=require('express-session');
 
-
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var postRouter=require('./routes/posts');
+var apiUserRouter=require('./api/routes/users');
+var apiAdminRouter=require('./api/routes/admin');
+var apiPostRouter=require('./api/routes/posts');
+
 
 var app = express();
 
@@ -22,26 +25,33 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
 app.use(session({
-  secret:'Hninsu@askdfskds***',
+  secret:'Hnin@abcdef@$ghij##',
   resave:false,
   saveUnintialized:true
 }))
-mongoose.connect('mongodb://127.0.0.1/007nodejs/007nodejs');
-// mongoose.connect('mongodb+srv://ko-gyi:Kogyi123@cluster0-gqlpl.mongodb.net/test?retryWrites=true&w=majority');
 
+// mongoose.connect('mongodb://127.0.0.1/nodejs007');
+mongoose.connect('mongodb+srv://suhlaing:suhlaing123@homework-yrqna.mongodb.net/test?retryWrites=true&w=majority');
 
 var db=mongoose.connection;
 db.on('error',console.error.bind(console,'MongoDB connection error:'));
 
-app.use(function(req,res,next){
+app.use(function (req,res,next) {
   res.locals.user=req.session.user;
   next();
-})
+});
+
 app.use('/', indexRouter);
-app.use(function (req,res,next) {
-  if (req.session.user) {
+//Restful api route
+app.use('/api/users',apiUserRouter);
+app.use('/api',apiAdminRouter);
+app.use('/api/posts',apiPostRouter);
+
+
+
+app.use(function(req,res,next){
+  if(req.session.user){
     next();
   }else {
     res.redirect('/signin');
