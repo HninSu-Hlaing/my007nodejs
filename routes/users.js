@@ -50,7 +50,7 @@ router.get('/userupdate/:uid',function(req,res,next){
   User.findById(req.params.uid,function (err,rtn) {
     if(err)throw err;
     console.log(rtn);
-    res.render('user/userupdate',{user:rtn});
+    res.render('user/userupdate',{users:rtn});
   });
 });
 router.post('/userupdate',function (req,res,next) {
